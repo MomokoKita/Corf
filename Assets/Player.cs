@@ -8,6 +8,7 @@ public class Player : MonoBehaviour
     Vector3 m_pos;
     [SerializeField] float m_speed = 3.2f;
     [SerializeField] GameObject up;
+    List<GameObject> itemList = new List<GameObject>();
 
     private Rigidbody2D rigidBody;
     private Vector2 inputAxis;
@@ -36,5 +37,21 @@ public class Player : MonoBehaviour
         GetComponent<Rigidbody2D>().velocity = direction * m_speed;
     }
 
+    public void ItemList(GameObject item)
+    {
+        itemList.Add(item);
+        Debug.Log(itemList[0]);
+    }
+    public bool Flag(string itemName)
+    {
+        foreach (var item in itemList)
+        {
+            if (item.name == itemName)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
 
 }

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Item : MonoBehaviour
+public class NPC : MonoBehaviour
 {
     // Start is called before the first frame update
     void Start()
@@ -19,9 +19,11 @@ public class Item : MonoBehaviour
     {
         if (col.tag == "Player")
         {
-            Debug.Log("Žð");
-            col.transform.parent.GetComponent<Player>().ItemList(gameObject);
-            gameObject.SetActive(false);
+            Player p = col.transform.parent.GetComponent<Player>();
+            if (p.Flag("liquor"))
+            {
+                Debug.Log("‚ ‚´‚Á‚·");
+            }
         }
     }
 }
