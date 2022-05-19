@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Item : MonoBehaviour
 {
+    [SerializeField] string m_item;
     // Start is called before the first frame update
     void Start()
     {
@@ -19,7 +20,7 @@ public class Item : MonoBehaviour
     {
         if (col.tag == "Player")
         {
-            Debug.Log("Žð");
+            Debug.Log(gameObject);
             col.transform.parent.GetComponent<Player>().ItemList(gameObject);
             col.gameObject.SetActive(false);
             gameObject.SetActive(false);

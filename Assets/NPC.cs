@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class NPC : MonoBehaviour
 {
-    // Start is called before the first frame update
     void Start()
     {
         
@@ -20,9 +19,13 @@ public class NPC : MonoBehaviour
         if (col.tag == "Player")
         {
             Player p = col.transform.parent.GetComponent<Player>();
-            if (p.Flag("liquor",false))
+            if (p.Flag("liquor",true))
             {
                 Debug.Log("Ç†Ç¥Ç¡Ç∑");
+            }
+            else if(p.Flag("potionHP", false))
+            {
+                Debug.Log("Ç÷Å[Ç‚ÇÈÇ∂Ç·ÇÒ");
             }
         }
     }

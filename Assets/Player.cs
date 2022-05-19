@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class Player : MonoBehaviour
 {
@@ -19,10 +20,21 @@ public class Player : MonoBehaviour
     }
     ViewDirection viewDirection = ViewDirection.LookDown;
 
+    public enum PlayerState
+    {
+        Default,
+        Menu
+        
+    }
+    PlayerState playerState = PlayerState.Default;
+
+    [SerializeField]
     List<GameObject> itemList = new List<GameObject>();
 
     private Rigidbody2D rigidBody;
     private Vector2 inputAxis;
+    [SerializeField]
+    Menu m_menu;
 
     // Start is called before the first frame update
     void Start()
@@ -35,12 +47,15 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        PlayerMove();
-        if (Input.GetKeyDown(KeyCode.E))
+        if (playerState == PlayerState.Default)
         {
-            //Catch();
-            StartCoroutine(PlayerCauth());
+            PlayerMove();
+            if (Input.GetKeyDown(KeyCode.E))
+            {
+                StartCoroutine(PlayerCauth());
+            }
         }
+        
     }
 
     /// <summary>
@@ -48,6 +63,10 @@ public class Player : MonoBehaviour
     /// </summary>
     public void PlayerMove()
     {
+        if (playerState == PlayerState.Menu)
+        {
+            return;
+        }
         // –îˆóƒL[‚Ì“ü—Íî•ñ‚ğæ“¾
         var h = Input.GetAxis("Horizontal");
         if (h > 0)  viewDirection = ViewDirection.LookRight;    //‰E‚Ì”»’è
@@ -59,6 +78,8 @@ public class Player : MonoBehaviour
 
         // ˆÚ“®‚·‚éŒü‚«‚ğì¬‚·‚é
         Vector2 direction = new Vector2(h, v).normalized;
+
+        
 
         if (Input.GetKey(KeyCode.LeftShift))
         {
@@ -109,10 +130,28 @@ public class Player : MonoBehaviour
         }
     }
 
-    public void ItemList(GameObject item)
+    public void PlayerStateManger(string state)
     {
+        if (state == "default")
+        {
+            playerState = PlayerState.Default;
+        }
+        else if(state == "menu")
+        {
+            playerState = PlayerState.Menu;
+        }
+    }
+
+    public void ItemList(GameObject item)
+    {      
         itemList.Add(item);
-        Debug.Log("‚¨ğ‚ğè‚É“ü‚ê‚½");
+        m_menu.AddItem(item);
+        Debug.Log(item+"‚ğè‚É“ü‚ê‚½");
+    }
+
+    public List<GameObject> GetItem()
+    {
+        return itemList;
     }
     public bool Flag(string itemName,bool lost)
     {
