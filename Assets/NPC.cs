@@ -20,7 +20,7 @@ public class NPC : MonoBehaviour
         if (col.tag == "Player")
         {
             Player p = col.transform.parent.GetComponent<Player>();
-            if (p.Flag("liquor"))
+            if (p.Flag("liquor",false))
             {
                 Debug.Log("‚ ‚´‚Á‚·");
             }

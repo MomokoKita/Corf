@@ -21,6 +21,7 @@ public class Item : MonoBehaviour
         {
             Debug.Log("Žð");
             col.transform.parent.GetComponent<Player>().ItemList(gameObject);
+            col.gameObject.SetActive(false);
             gameObject.SetActive(false);
         }
     }
