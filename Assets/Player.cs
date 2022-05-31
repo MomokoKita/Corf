@@ -5,6 +5,9 @@ using System;
 
 public class Player : MonoBehaviour
 {
+    [SerializeField]
+    TextManager textManager;
+
      Vector3 m_pos;
     [SerializeField] float m_speed = 3.2f;
 
@@ -23,7 +26,8 @@ public class Player : MonoBehaviour
     public enum PlayerState
     {
         Default,
-        Menu
+        Menu,
+        Log
         
     }
     PlayerState playerState = PlayerState.Default;
@@ -50,7 +54,7 @@ public class Player : MonoBehaviour
         if (playerState == PlayerState.Default)
         {
             PlayerMove();
-            if (Input.GetKeyDown(KeyCode.E))
+            if (Input.GetKeyDown(KeyCode.Z))
             {
                 StartCoroutine(PlayerCauth());
             }
@@ -63,7 +67,7 @@ public class Player : MonoBehaviour
     /// </summary>
     public void PlayerMove()
     {
-        if (playerState == PlayerState.Menu)
+        if (playerState != PlayerState.Default)
         {
             return;
         }
@@ -130,6 +134,10 @@ public class Player : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Player‚ª¡‚Ç‚Ìs“®‚ğ‚µ‚Ä‚é‚©w’è‚·‚éŠÖ”
+    /// </summary>
+    /// <param name="state"></param>
     public void PlayerStateManger(string state)
     {
         if (state == "default")
@@ -140,12 +148,17 @@ public class Player : MonoBehaviour
         {
             playerState = PlayerState.Menu;
         }
+        else if (state == "log")
+        {
+            playerState = PlayerState.Log;
+        }
     }
 
     public void ItemList(GameObject item)
     {      
         itemList.Add(item);
         m_menu.AddItem(item);
+        textManager.GetItemLog(item);
         Debug.Log(item+"‚ğè‚É“ü‚ê‚½");
     }
 

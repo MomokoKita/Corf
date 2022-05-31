@@ -13,6 +13,21 @@ public class Menu : MonoBehaviour
     [SerializeField]
     GameObject healBox;
 
+    public enum SubMenuState  //サブメニュー
+    {
+        Main,
+        Status,
+        Item,
+        Fitted,
+        Character,
+    }
+    [SerializeField]
+    GameObject mainPanel;
+    [SerializeField]
+    GameObject itemPanel;
+
+    SubMenuState subMenuState = SubMenuState.Main;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -23,12 +38,30 @@ public class Menu : MonoBehaviour
     void Update()
     {
     }
+    /// <summary>m
+    /// メニューのステート管理
+    /// </summary>
+    /// <param name="state"></param>
+    public void MenuStateManger(string menu)
+    {
+        if (menu == "main")
+        {
+            mainPanel.SetActive(true);
+            itemPanel.SetActive(false);
+        }
+        else if (menu == "item")
+        {
+            mainPanel.SetActive(false);
+            itemPanel.SetActive(true);
+        }
+    }
 
     public void AddItem(GameObject item)
     {
         GameObject obj = (GameObject)Instantiate(itemText, transform.position, Quaternion.identity);
-        obj.GetComponent<Text>().text = item.name;
+        obj.GetComponent<Text>().text = item.GetComponent<ItemBase>().itemName;
         Debug.Log(item.name);
         obj.transform.parent = healBox.transform;
     }
+
 }

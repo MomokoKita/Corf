@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class NPC : MonoBehaviour
 {
+    [SerializeField] TextManager textManager;
     void Start()
     {
         
@@ -12,7 +13,6 @@ public class NPC : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
     }
     private void OnTriggerEnter2D(Collider2D col)
     {
@@ -21,7 +21,8 @@ public class NPC : MonoBehaviour
             Player p = col.transform.parent.GetComponent<Player>();
             if (p.Flag("liquor",true))
             {
-                Debug.Log("‚ ‚´‚Á‚·");
+                textManager.LeadNPC("‚ ‚´‚Á‚·");
+                
             }
             else if(p.Flag("potionHP", false))
             {
