@@ -21,6 +21,7 @@ public class Player : MonoBehaviour
         LookDown, 
         LookLeft, 
     }
+    [SerializeField]
     ViewDirection viewDirection = ViewDirection.LookDown;
 
     public enum PlayerState
@@ -53,13 +54,14 @@ public class Player : MonoBehaviour
     {
         if (playerState == PlayerState.Default)
         {
-            PlayerMove();
             if (Input.GetKeyDown(KeyCode.Z))
             {
                 StartCoroutine(PlayerCauth());
             }
+            PlayerMove();       
         }
         
+
     }
 
     /// <summary>
@@ -67,23 +69,19 @@ public class Player : MonoBehaviour
     /// </summary>
     public void PlayerMove()
     {
+        // 矢印キーの入力情報を取得
+        var h = Input.GetAxis("Horizontal");
+        if (h > 0) viewDirection = ViewDirection.LookRight;    //右の判定
+        else if (h < 0) viewDirection = ViewDirection.LookLeft; //左の判定
+        var v = Input.GetAxis("Vertical");
+        if (v > 0) viewDirection = ViewDirection.LookUp;       //上の判定
+        else if (v < 0) viewDirection = ViewDirection.LookDown;     //下の判定
         if (playerState != PlayerState.Default)
         {
             return;
         }
-        // 矢印キーの入力情報を取得
-        var h = Input.GetAxis("Horizontal");
-        if (h > 0)  viewDirection = ViewDirection.LookRight;    //右の判定
-        else if (h < 0) viewDirection = ViewDirection.LookLeft; //左の判定
-
-        var v = Input.GetAxis("Vertical");
-        if (v > 0)  viewDirection = ViewDirection.LookUp;       //上の判定
-        if (v < 0)  viewDirection = ViewDirection.LookDown;     //下の判定
-
         // 移動する向きを作成する
         Vector2 direction = new Vector2(h, v).normalized;
-
-        
 
         if (Input.GetKey(KeyCode.LeftShift))
         {
@@ -103,7 +101,6 @@ public class Player : MonoBehaviour
     /// <returns></returns>
     IEnumerator PlayerCauth()
     {
-        Debug.Log(viewDirection);
         if (viewDirection == ViewDirection.LookUp)
         {
             catchColsion[0].SetActive(true);
@@ -124,7 +121,8 @@ public class Player : MonoBehaviour
         {
             Debug.Log("Error");
         }
-        yield return new WaitForSeconds(0.5f);
+
+        yield return new WaitForSeconds(0.1f);
         foreach (var item in catchColsion)
         {
             if (item.activeSelf)

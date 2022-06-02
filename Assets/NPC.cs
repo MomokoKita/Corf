@@ -5,6 +5,16 @@ using UnityEngine;
 public class NPC : MonoBehaviour
 {
     [SerializeField] TextManager textManager;
+
+    [SerializeField]
+    private string speekText;
+    [SerializeField]
+    private bool need = false;
+    [SerializeField]
+    private string needItem = "";
+    [SerializeField]
+    private string passedItem = "";
+
     void Start()
     {
         
@@ -16,18 +26,30 @@ public class NPC : MonoBehaviour
     }
     private void OnTriggerEnter2D(Collider2D col)
     {
+        Debug.Log("Ç†ÇΩÇ¡ÇƒÇÈÇÊ");
         if (col.tag == "Player")
         {
             Player p = col.transform.parent.GetComponent<Player>();
-            if (p.Flag("liquor",true))
+            if (need)
             {
-                textManager.LeadNPC("Ç†Ç¥Ç¡Ç∑");
-                
+                if (p.Flag(needItem, true))
+                {
+                    textManager.LeadNPC(passedItem);
+
+                }
+                else
+                {
+                    textManager.LeadNPC(speekText);
+                }
+
             }
-            else if(p.Flag("potionHP", false))
+            else
             {
-                Debug.Log("Ç÷Å[Ç‚ÇÈÇ∂Ç·ÇÒ");
+                Debug.Log("í èÌ");
+                textManager.LeadNPC(speekText);
             }
+
+
         }
     }
 }

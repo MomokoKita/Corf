@@ -8,11 +8,6 @@ public class Menu : MonoBehaviour
     [SerializeField]
     Player m_player;
 
-    [SerializeField]
-    GameObject itemText;
-    [SerializeField]
-    GameObject healBox;
-
     public enum SubMenuState  //サブメニュー
     {
         Main,
@@ -21,12 +16,19 @@ public class Menu : MonoBehaviour
         Fitted,
         Character,
     }
+    SubMenuState subMenuState = SubMenuState.Main;
+
+    //最初に表示するパネル
     [SerializeField]
     GameObject mainPanel;
+    //アイテムの表示
+    [SerializeField]
+    GameObject statusPanel;
     [SerializeField]
     GameObject itemPanel;
+    [SerializeField]
+    GameObject itemText;
 
-    SubMenuState subMenuState = SubMenuState.Main;
 
     // Start is called before the first frame update
     void Start()
@@ -61,7 +63,7 @@ public class Menu : MonoBehaviour
         GameObject obj = (GameObject)Instantiate(itemText, transform.position, Quaternion.identity);
         obj.GetComponent<Text>().text = item.GetComponent<ItemBase>().itemName;
         Debug.Log(item.name);
-        obj.transform.parent = healBox.transform;
+        obj.transform.parent = itemPanel.transform;
     }
 
 }

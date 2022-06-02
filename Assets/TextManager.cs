@@ -23,7 +23,7 @@ public class TextManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Z) && getLog )
+        if (Input.GetKeyDown(KeyCode.Z) && getLog)
         {
             mainPanel.SetActive(false);
             getLog = false;
@@ -41,7 +41,6 @@ public class TextManager : MonoBehaviour
     public void LeadNPC(string npcText)
     {
         m_player.PlayerStateManger("log");
-        Debug.Log("‚ ‚´‚Á‚·");
         mainPanel.SetActive(true);
         mainText.text = npcText;
         getLog = true;
