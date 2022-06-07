@@ -5,11 +5,9 @@ using System;
 
 public class Player : MonoBehaviour
 {
-    [SerializeField]
-    TextManager textManager;
-
-     Vector3 m_pos;
-    [SerializeField] float m_speed = 3.2f;
+    //移動に関わる変数
+    Vector3 m_pos;　//プレイヤーの位置
+    [SerializeField] float m_speed = 3.2f; //プレイヤーの速さ
 
     //上下左右の当たり判定
     [SerializeField]
@@ -24,29 +22,33 @@ public class Player : MonoBehaviour
     [SerializeField]
     ViewDirection viewDirection = ViewDirection.LookDown;
 
+    [SerializeField]
+    TextManager m_textManager; //テキストに関する変数
+    [SerializeField]
+    Menu m_menu; //メニューに関わる変数
+
     public enum PlayerState
     {
-        Default,
-        Menu,
-        Log
-        
+        Default,    //マップ移動、アイテムの取得などの基本の状態
+        Menu,       //メニューの表示中
+        Log         //テキストの表示中   
     }
     PlayerState playerState = PlayerState.Default;
 
     [SerializeField]
-    List<GameObject> itemList = new List<GameObject>();
+    List<GameObject> m_itemList = new List<GameObject>(); //プレイヤーの持つアイテム
 
-    private Rigidbody2D rigidBody;
-    private Vector2 inputAxis;
+    private Rigidbody2D m_rigidBody;
+
     [SerializeField]
-    Menu m_menu;
+    private Charactor m_charactor;
+    public Charactor charactor => m_charactor;
 
-    // Start is called before the first frame update
     void Start()
     {
         //オブジェクトの現在の座標を入手
         m_pos = transform.position;
-        rigidBody = GetComponent<Rigidbody2D>();
+        m_rigidBody = GetComponent<Rigidbody2D>();
     }
 
     // Update is called once per frame
@@ -86,12 +88,12 @@ public class Player : MonoBehaviour
         if (Input.GetKey(KeyCode.LeftShift))
         {
             // スピード二倍
-            rigidBody.velocity = direction * m_speed * 2;
+            m_rigidBody.velocity = direction * m_speed * 2;
         }
         else
         {
             // 移動する向きとスピードを代入 
-            rigidBody.velocity = direction * m_speed;
+            m_rigidBody.velocity = direction * m_speed;
         }    
     }
 
@@ -154,25 +156,24 @@ public class Player : MonoBehaviour
 
     public void ItemList(GameObject item)
     {      
-        itemList.Add(item);
+        m_itemList.Add(item);
         m_menu.AddItem(item);
-        textManager.GetItemLog(item);
-        Debug.Log(item+"を手に入れた");
+        m_textManager.GetItemLog(item);
     }
 
     public List<GameObject> GetItem()
     {
-        return itemList;
+        return m_itemList;
     }
     public bool Flag(string itemName,bool lost)
     {
-        foreach (var item in itemList)
+        foreach (var item in m_itemList)
         {
             if (item.name == itemName)
             {
                 if (lost)
                 {
-                    itemList.Remove(item);
+                    m_itemList.Remove(item);
                 }
                 
                 return true;

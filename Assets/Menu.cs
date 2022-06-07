@@ -21,6 +21,11 @@ public class Menu : MonoBehaviour
     //最初に表示するパネル
     [SerializeField]
     GameObject mainPanel;
+
+    //ステータス画面
+    [SerializeField]
+    Text m_hpText;
+
     //アイテムの表示
     [SerializeField]
     GameObject statusPanel;
@@ -33,7 +38,6 @@ public class Menu : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
     }
 
     // Update is called once per frame
@@ -49,13 +53,22 @@ public class Menu : MonoBehaviour
         if (menu == "main")
         {
             mainPanel.SetActive(true);
+            statusPanel.SetActive(false);
             itemPanel.SetActive(false);
         }
         else if (menu == "item")
         {
             mainPanel.SetActive(false);
+            statusPanel.SetActive(false);
             itemPanel.SetActive(true);
         }
+    }
+
+    public void Status()
+    {
+        mainPanel.SetActive(false);
+        itemPanel.SetActive(false);
+        statusPanel.SetActive(true);
     }
 
     public void AddItem(GameObject item)
