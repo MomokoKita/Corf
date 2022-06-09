@@ -8,6 +8,11 @@ public class GameManager : MonoBehaviour
     GameObject m_menu;
     [SerializeField]
     Player m_player;
+
+    [SerializeField]
+    private int m_money = 0;
+    public int money => m_money;
+
     // Start is called before the first frame update
     void Start()
     {

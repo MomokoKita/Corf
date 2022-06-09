@@ -22,8 +22,15 @@ public class Player : MonoBehaviour
     [SerializeField]
     ViewDirection viewDirection = ViewDirection.LookDown;
 
+    //プレイヤーのスクリプト
+    [SerializeField]
+    SpriteRenderer playerSprite;
+    [SerializeField]
+    Sprite[] m_anima;
+
     [SerializeField]
     TextManager m_textManager; //テキストに関する変数
+
     [SerializeField]
     Menu m_menu; //メニューに関わる変数
 
@@ -33,6 +40,7 @@ public class Player : MonoBehaviour
         Menu,       //メニューの表示中
         Log         //テキストの表示中   
     }
+    [SerializeField]
     PlayerState playerState = PlayerState.Default;
 
     [SerializeField]
@@ -49,6 +57,7 @@ public class Player : MonoBehaviour
         //オブジェクトの現在の座標を入手
         m_pos = transform.position;
         m_rigidBody = GetComponent<Rigidbody2D>();
+        playerSprite = gameObject.GetComponent<SpriteRenderer>();
     }
 
     // Update is called once per frame
@@ -56,13 +65,15 @@ public class Player : MonoBehaviour
     {
         if (playerState == PlayerState.Default)
         {
-            if (Input.GetKeyDown(KeyCode.Z))
-            {
-                StartCoroutine(PlayerCauth());
-            }
-            PlayerMove();       
+            PlayerMove();
         }
-        
+        if (Input.GetKeyDown(KeyCode.Z))
+        {
+            if (playerState == PlayerState.Default)
+            {
+                StartCoroutine(PlayerCauth());                
+            }
+        }      
 
     }
 
@@ -73,11 +84,27 @@ public class Player : MonoBehaviour
     {
         // 矢印キーの入力情報を取得
         var h = Input.GetAxis("Horizontal");
-        if (h > 0) viewDirection = ViewDirection.LookRight;    //右の判定
-        else if (h < 0) viewDirection = ViewDirection.LookLeft; //左の判定
+        if (h > 0)
+        {
+            playerSprite.sprite = m_anima[1];
+            viewDirection = ViewDirection.LookRight;
+        }            //右の判定
+        else if (h < 0) 
+        {
+            playerSprite.sprite = m_anima[3];
+            viewDirection = ViewDirection.LookLeft; 
+        }           //左の判定
         var v = Input.GetAxis("Vertical");
-        if (v > 0) viewDirection = ViewDirection.LookUp;       //上の判定
-        else if (v < 0) viewDirection = ViewDirection.LookDown;     //下の判定
+        if (v > 0)
+        {
+            playerSprite.sprite = m_anima[0];
+            viewDirection = ViewDirection.LookUp;
+        }           //上の判定
+        else if (v < 0) 
+        {
+            playerSprite.sprite = m_anima[2];
+            viewDirection = ViewDirection.LookDown; 
+        }           //下の判定
         if (playerState != PlayerState.Default)
         {
             return;
@@ -103,28 +130,36 @@ public class Player : MonoBehaviour
     /// <returns></returns>
     IEnumerator PlayerCauth()
     {
-        if (viewDirection == ViewDirection.LookUp)
+        if(playerState == PlayerState.Log)
         {
-            catchColsion[0].SetActive(true);
+            yield return new WaitForSeconds(0.1f);
         }
-        else if (viewDirection == ViewDirection.LookRight)
+        else if (playerState == PlayerState.Default)
         {
-            catchColsion[1].SetActive(true);
+            if (viewDirection == ViewDirection.LookUp)
+            {
+                catchColsion[0].SetActive(true);
+            }
+            else if (viewDirection == ViewDirection.LookRight)
+            {
+                catchColsion[1].SetActive(true);
+            }
+            else if (viewDirection == ViewDirection.LookDown)
+            {
+                catchColsion[2].SetActive(true);
+            }
+            else if (viewDirection == ViewDirection.LookLeft)
+            {
+                catchColsion[3].SetActive(true);
+            }
+            else
+            {
+                Debug.Log("Error");
+            }
+            yield return new WaitForSeconds(0.1f);
         }
-        else if (viewDirection == ViewDirection.LookDown)
-        {
-            catchColsion[2].SetActive(true);
-        }
-        else if (viewDirection == ViewDirection.LookLeft)
-        {
-            catchColsion[3].SetActive(true);
-        }
-        else
-        {
-            Debug.Log("Error");
-        }
-
-        yield return new WaitForSeconds(0.1f);
+        yield return null;
+        
         foreach (var item in catchColsion)
         {
             if (item.activeSelf)
@@ -154,10 +189,17 @@ public class Player : MonoBehaviour
         }
     }
 
-    public void ItemList(GameObject item)
+    public void AddItemList(GameObject item)
     {      
         m_itemList.Add(item);
         m_menu.AddItem(item);
+        m_textManager.GetItemLog(item);
+    }
+
+    public void RemoveItemList(GameObject item)
+    {
+        m_itemList.Remove(item);
+        m_menu.RemoveItem(item);
         m_textManager.GetItemLog(item);
     }
 

@@ -27,7 +27,7 @@ public class TextManager : MonoBehaviour
         {
             mainPanel.SetActive(false);
             getLog = false;
-            m_player.PlayerStateManger("default");
+            StartCoroutine(Wait());
         }
     }
 
@@ -44,5 +44,10 @@ public class TextManager : MonoBehaviour
         mainPanel.SetActive(true);
         mainText.text = npcText;
         getLog = true;
+    }
+    IEnumerator Wait()
+    {
+        yield return new WaitForSeconds(0.2f);
+        m_player.PlayerStateManger("default");
     }
 }

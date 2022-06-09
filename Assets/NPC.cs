@@ -32,15 +32,7 @@ public class NPC : MonoBehaviour
             Player p = col.transform.parent.GetComponent<Player>();
             if (need)
             {
-                if (p.Flag(needItem, true))
-                {
-                    textManager.LeadNPC(passedItem);
-
-                }
-                else
-                {
-                    textManager.LeadNPC(speekText);
-                }
+                NeedItem(p);
 
             }
             else
@@ -50,6 +42,19 @@ public class NPC : MonoBehaviour
             }
 
 
+        }
+    }
+
+    public void NeedItem(Player p)
+    {
+        if (p.Flag(needItem, true))
+        {
+            textManager.LeadNPC(passedItem);
+            need = false;
+        }
+        else
+        {
+            textManager.LeadNPC(speekText);
         }
     }
 }

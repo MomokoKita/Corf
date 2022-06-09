@@ -23,7 +23,7 @@ public class ItemBase : MonoBehaviour
         if (col.tag == "Player")
         {
             Debug.Log(gameObject);
-            col.transform.parent.GetComponent<Player>().ItemList(gameObject);
+            col.transform.parent.GetComponent<Player>().AddItemList(gameObject);
             col.gameObject.SetActive(false);
             gameObject.SetActive(false);
         }
