@@ -4,10 +4,16 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    [SerializeField]
-    GameObject m_menu;
+    //プレイヤーの管理
     [SerializeField]
     Player m_player;
+
+    //メニューの管理
+    [SerializeField]
+    Menu m_menu;
+    [SerializeField]
+    GameObject m_menuPanel;
+    
 
     [SerializeField]
     private int m_money = 0;
@@ -23,14 +29,15 @@ public class GameManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.X))
         {
-            if (!m_menu.activeSelf)
+            if (!m_menuPanel.activeSelf)
             {
-                m_menu.SetActive(true);
+                m_menu.ActivePanel(0);
+                m_menuPanel.SetActive(true);
                 m_player.PlayerStateManger("menu");
             }
             else
             {
-                m_menu.SetActive(false);
+                m_menuPanel.SetActive(false);
                 m_player.PlayerStateManger("default");
             }
             

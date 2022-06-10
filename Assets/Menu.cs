@@ -16,10 +16,10 @@ public class Menu : MonoBehaviour
     public enum SubMenuState  //サブメニュー
     {
         Main,
-        Status,
         Item,
+        Skill,
+        Status,       
         Fitted,
-        Character,
     }
     SubMenuState subMenuState = SubMenuState.Main;
 
@@ -27,9 +27,10 @@ public class Menu : MonoBehaviour
     [SerializeField]
     private Text mainText;
 
-    //最初に表示するパネル
+    //画面のパネル配列
     [SerializeField]
-    GameObject mainPanel;
+    GameObject[] m_panels;
+
     //金の表示
     [SerializeField]
     private Text m_moneyText;
@@ -61,30 +62,14 @@ public class Menu : MonoBehaviour
             m_moneyText.text = gameManager.money.ToString() + "G";
         }       
     }
-    /// <summary>m
-    /// メニューのステート管理
-    /// </summary>
-    /// <param name="state"></param>
-    public void MenuStateManger(string menu)
+
+    public void ActivePanel(int num)
     {
-        if (menu == "main")
+        foreach (var item in m_panels)
         {
-            mainPanel.SetActive(true);
-            statusPanel.SetActive(false);
-            itemPanel.SetActive(false);
+            item.SetActive(false);
         }
-        else if (menu == "item")
-        {
-            mainPanel.SetActive(false);
-            statusPanel.SetActive(false);
-            itemPanel.SetActive(true);
-        }
-        else if (menu == "status")
-        {
-            mainPanel.SetActive(false);
-            itemPanel.SetActive(false);
-            statusPanel.SetActive(true);
-        }
+        m_panels[num].SetActive(true);
     }
 
     public void AddItem(GameObject item)
