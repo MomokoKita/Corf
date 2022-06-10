@@ -45,7 +45,7 @@ public class Player : MonoBehaviour
 
     [SerializeField]
     List<GameObject> m_itemList = new List<GameObject>(); //プレイヤーの持つアイテム
-
+    public List<GameObject> itemList => m_itemList;
     private Rigidbody2D m_rigidBody;
 
     [SerializeField]
@@ -192,21 +192,20 @@ public class Player : MonoBehaviour
     public void AddItemList(GameObject item)
     {      
         m_itemList.Add(item);
+        m_textManager.GetItemLog(item);
         m_menu.AddItem(item);
-        m_textManager.GetItemLog(item);
-    }
-
-    public void RemoveItemList(GameObject item)
-    {
-        m_itemList.Remove(item);
-        m_menu.RemoveItem(item);
-        m_textManager.GetItemLog(item);
     }
 
     public List<GameObject> GetItem()
     {
         return m_itemList;
     }
+    /// <summary>
+    /// NPCが提示して欲しいアイテムがあるか調べる関数
+    /// </summary>
+    /// <param name="itemName">相手の欲しいアイテム</param>
+    /// <param name="lost">trueだった場合相手に渡す</param>
+    /// <returns>trueだった場合持ってる</returns>
     public bool Flag(string itemName,bool lost)
     {
         foreach (var item in m_itemList)
@@ -216,6 +215,7 @@ public class Player : MonoBehaviour
                 if (lost)
                 {
                     m_itemList.Remove(item);
+                    m_menu.RemoveItem(item);
                 }
                 
                 return true;
