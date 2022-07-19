@@ -38,13 +38,35 @@ public class TextManager : MonoBehaviour
         mainText.text = item.GetComponent<ItemBase>().itemName + "を手に入れた";
         getLog = true;
     }
-    public void LeadNPC(string npcText)
+    public void ReadNPC(string npcText)
     {
         m_player.PlayerStateManger("log");
         mainPanel.SetActive(true);
-        mainText.text = npcText;
+        StartCoroutine(ReadText(npcText));
         getLog = true;
     }
+
+    IEnumerator ReadText(string npcText)
+    {
+        int messageCount = 0; //現在表示中の文字数
+        mainText.text = "";
+        while (npcText.Length > messageCount)//文字をすべて表示していない場合ループ
+        {
+            mainText.text += npcText[messageCount];//一文字追加
+            if (npcText[messageCount] == char.Parse("。"))
+            {
+                yield return new WaitForSeconds(0.8f);
+
+            }
+            messageCount++;//現在の文字数
+            yield return new WaitForSeconds(0.1f);//任意の時間待つ
+        }
+        yield return null;
+    }
+
+    /// <summary>
+    /// 連続して当たり判定を取らないようにする
+    /// </summary>
     IEnumerator Wait()
     {
         yield return new WaitForSeconds(0.2f);

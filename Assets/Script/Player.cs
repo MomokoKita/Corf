@@ -28,6 +28,9 @@ public class Player : MonoBehaviour
     [SerializeField]
     Sprite[] m_anima;
 
+    //プレイヤーの歩行アニメーション
+    private Animator m_anim;  
+
     [SerializeField]
     TextManager m_textManager; //テキストに関する変数
 
@@ -58,6 +61,9 @@ public class Player : MonoBehaviour
         m_pos = transform.position;
         m_rigidBody = GetComponent<Rigidbody2D>();
         playerSprite = gameObject.GetComponent<SpriteRenderer>();
+
+        //アニメーター
+        m_anim = gameObject.GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -73,7 +79,7 @@ public class Player : MonoBehaviour
             {
                 StartCoroutine(PlayerCauth());                
             }
-        }      
+        }
 
     }
 
@@ -82,10 +88,15 @@ public class Player : MonoBehaviour
     /// </summary>
     public void PlayerMove()
     {
+        if (playerState != PlayerState.Default)
+        {
+            return;
+        }
         // 矢印キーの入力情報を取得
         var h = Input.GetAxis("Horizontal");
         if (h > 0)
         {
+            
             playerSprite.sprite = m_anima[1];
             viewDirection = ViewDirection.LookRight;
         }            //右の判定
@@ -102,13 +113,15 @@ public class Player : MonoBehaviour
         }           //上の判定
         else if (v < 0) 
         {
+            m_anim.SetInteger("walkInt", 1);
             playerSprite.sprite = m_anima[2];
             viewDirection = ViewDirection.LookDown; 
         }           //下の判定
-        if (playerState != PlayerState.Default)
+        else
         {
-            return;
+            m_anim.SetInteger("walkInt", 0);
         }
+        
         // 移動する向きを作成する
         Vector2 direction = new Vector2(h, v).normalized;
 

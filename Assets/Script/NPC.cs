@@ -38,7 +38,7 @@ public class NPC : MonoBehaviour
             else
             {
                 Debug.Log("í èÌ");
-                textManager.LeadNPC(speekText);
+                textManager.ReadNPC(speekText);
             }
 
 
@@ -49,12 +49,12 @@ public class NPC : MonoBehaviour
     {
         if (p.Flag(needItem, true))
         {
-            textManager.LeadNPC(passedItem);
+            textManager.ReadNPC(passedItem);
             need = false;
         }
         else
         {
-            textManager.LeadNPC(speekText);
+            textManager.ReadNPC(speekText);
         }
     }
 }
