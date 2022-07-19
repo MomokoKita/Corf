@@ -2,31 +2,45 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
+using System.IO;
 
 public class NovelPart : MonoBehaviour
 {
     //テキストを表示するパネル
-    [SerializeField]
-    private GameObject m_Panel;
+    [SerializeField] private GameObject m_Panel;
     //文章を表示するテキスト
-    [SerializeField]
-    private Text m_Text;
-
-    // Reaourcesフォルダから直接テキストを読み込む
-    private string loadText;
-    // 改行で分割して配列に入れる
-    private string[] splitText;
+    [SerializeField] private Text m_mainText;
+    //名前を表示するテキスト
+    [SerializeField] private Text m_nameText;
     // 現在表示中のテキスト番号
     private int textNum;
+    //現在取得中の文字列
+    string nowMainText = default;
+
+    //jsonデータのメンバ変数
+    string dataPath = "Assets/Script/Novel/First.json";
+    string json;
+    TextEventClass jsonData = new TextEventClass();
+
+    private bool waitFlag = false; //待機フラグ
+    private bool clickFlag = false; //クリックフラグ
+
+    //コメントのコルーチンを止める為の変数
+    Coroutine comentCoroutine;
 
 
     // Start is called before the first frame update
     void Start()
     {
-        loadText = (Resources.Load("First", typeof(TextAsset)) as TextAsset).text;
-        splitText = loadText.Split(char.Parse("\n"));
         textNum = 0;
-        StartCoroutine(ReadText(splitText[textNum]));
+
+        //jsonの読み込み
+        json = File.ReadAllText(dataPath);
+        JsonUtility.FromJsonOverwrite(json, jsonData);
+
+        m_nameText.text = jsonData.event_one[textNum].name;
+        comentCoroutine = StartCoroutine(ReadText(jsonData.event_one[textNum].main));
 
     }
 
@@ -35,30 +49,49 @@ public class NovelPart : MonoBehaviour
     {
         if (Input.GetKeyDown("z"))
         {
-            if (textNum < splitText.Length -1)
-            {                
+            if (jsonData.event_one[textNum].name == "end") return;
+
+
+            if (waitFlag)
+            {
                 textNum++;
-                StartCoroutine(ReadText(splitText[textNum]));               
+                comentCoroutine = StartCoroutine(ReadText(jsonData.event_one[textNum].main));
             }
-            
+            else {
+                m_nameText.text = jsonData.event_one[textNum].name;
+                StopCoroutine(comentCoroutine);               
+                m_mainText.text = jsonData.event_one[textNum].main;
+                waitFlag = true;
+            }
+
         }
+
     }
 
     IEnumerator ReadText(string npcText)
     {
-        int messageCount = 0; //現在表示中の文字数
-        m_Text.text = "";
-        while (npcText.Length > messageCount)//文字をすべて表示していない場合ループ
-        {
-            m_Text.text += npcText[messageCount];//一文字追加
-            if (npcText[messageCount] == char.Parse("。"))
-            {
-                yield return new WaitForSeconds(0.8f);
+        waitFlag = false;
+        m_mainText.text = "";
 
-            }
-            messageCount++;//現在の文字数
-            yield return new WaitForSeconds(0.1f);//任意の時間待つ
+        if (npcText == null)
+        {
+            yield return null;
         }
+        else
+        {
+            m_mainText.text = "";
+            foreach (var ch in npcText) // 文字列の先頭から1文字ずつ処理
+            {
+                m_mainText.text += ch; // 一文字追加
+                                     // これ待っている間、スキップできない
+                yield return new WaitForSeconds(0.04F); // 指定秒待つ
+            }
+
+            yield return null;
+        }
+        Debug.Log("終了");
+        waitFlag = true;
+
         yield return null;
     }
 }
