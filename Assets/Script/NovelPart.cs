@@ -15,8 +15,6 @@ public class NovelPart : MonoBehaviour
     [SerializeField] private Text m_nameText;
     // 現在表示中のテキスト番号
     private int textNum;
-    //現在取得中の文字列
-    string nowMainText = default;
 
     //jsonデータのメンバ変数
     string dataPath = "Assets/Script/Novel/First.json";
@@ -24,10 +22,15 @@ public class NovelPart : MonoBehaviour
     TextEventClass jsonData = new TextEventClass();
 
     private bool waitFlag = false; //待機フラグ
-    private bool clickFlag = false; //クリックフラグ
 
     //コメントのコルーチンを止める為の変数
     Coroutine comentCoroutine;
+
+    //キャラクター
+    [SerializeField ]CharaList charaList;
+
+    //キャラクターの選択肢 
+    [SerializeField] GameObject m_select;
 
 
     // Start is called before the first frame update
@@ -41,6 +44,7 @@ public class NovelPart : MonoBehaviour
 
         m_nameText.text = jsonData.event_one[textNum].name;
         comentCoroutine = StartCoroutine(ReadText(jsonData.event_one[textNum].main));
+        FaceChange();
 
     }
 
@@ -49,18 +53,23 @@ public class NovelPart : MonoBehaviour
     {
         if (Input.GetKeyDown("z"))
         {
-            if (jsonData.event_one[textNum].name == "end") return;
-
-
+            if (jsonData.event_one[textNum].name == "end")
+            {
+                Debug.Log("endだよ");
+                return;
+            }
+            Debug.Log("nomalだよ" + textNum);
             if (waitFlag)
             {
                 textNum++;
                 comentCoroutine = StartCoroutine(ReadText(jsonData.event_one[textNum].main));
             }
-            else {
+            else
+            {
                 m_nameText.text = jsonData.event_one[textNum].name;
-                StopCoroutine(comentCoroutine);               
+                StopCoroutine(comentCoroutine);
                 m_mainText.text = jsonData.event_one[textNum].main;
+
                 waitFlag = true;
             }
 
@@ -70,6 +79,14 @@ public class NovelPart : MonoBehaviour
 
     IEnumerator ReadText(string npcText)
     {
+        if (jsonData.event_one[textNum].name == "select")
+        {
+            Debug.Log("selectだよ");
+            m_select.gameObject.SetActive(true);
+            yield break;
+        }
+
+        FaceChange();
         waitFlag = false;
         m_mainText.text = "";
 
@@ -89,9 +106,31 @@ public class NovelPart : MonoBehaviour
 
             yield return null;
         }
-        Debug.Log("終了");
         waitFlag = true;
 
         yield return null;
+    }
+
+
+    public void SelectButton(string text)
+    {
+        if (text == "two")
+        {
+            m_nameText.text = jsonData.event_two[0].name;
+            m_mainText.text = jsonData.event_two[0].main;
+            
+        }
+        else if (text == "three")
+        {
+            m_nameText.text = jsonData.event_three[0].name;
+            m_mainText.text = jsonData.event_three[0].main;
+        }
+        m_select.gameObject.SetActive(false);
+        Debug.Log(jsonData.event_one[textNum].main +""+textNum);
+    }
+
+    public void FaceChange()
+    {
+        charaList.FaceChange(jsonData.event_one[textNum].face[0], jsonData.event_one[textNum].face[0]);
     }
 }
